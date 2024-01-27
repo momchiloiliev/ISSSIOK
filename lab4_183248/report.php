@@ -1,13 +1,10 @@
 <?php
-// Connect to the database
 include 'config.php';
 
-// Fetch transactions for the given date
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['show_transactions'])) {
         $selectedDate = $_POST['selected_date'];
 
-        // Fetch transactions for the given date
         $stmt = $conn->prepare("
             SELECT shopping_cart.date_and_time, products.product_name, cart_items.product_amount, 
                    (products.unit_price * cart_items.product_amount) as product_price

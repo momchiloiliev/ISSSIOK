@@ -1,8 +1,5 @@
 <?php
-// Connect to the database
 include 'config.php';
-
-
 
 
 if (!isset($_SESSION['cart_id'])) {
@@ -13,14 +10,11 @@ if (!isset($_SESSION['cart_id'])) {
 
 $cart_id = $_SESSION['cart_id'];
 
-// Handle adding products to the basket
+// Handle adding products to the cart
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['add_to_basket'])) {
         $productCode = $_POST['product_code'];
         $quantity = $_POST['quantity'];
-
-        // Validate input
-        // ...
 
         // Check if the product exists
         $stmt = $conn->prepare("SELECT * FROM products WHERE product_code = ?");
@@ -28,18 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $product = $stmt->fetch();
 
         if ($product) {
-            // Calculate product price
             $productPrice = $quantity * $product['unit_price'];
 
             // Add product to the basket (cart_items table)
             $stmt = $conn->prepare("INSERT INTO cart_items (product_id, cart_id, product_amount) VALUES (?, ?, ?)");
             $stmt->execute([$product['id'], $_SESSION['cart_id'], $quantity]);
 
-            // Update the total price in the shopping cart
-            // $stmt = $conn->prepare("UPDATE shopping_cart SET total_price = total_price + ? WHERE id = ?");
-            // $stmt->execute([$productPrice, $_SESSION['cart_id']]);
-
-            // Redirect to the homepage
             header("Location: index.php");
             exit();
         } else {
